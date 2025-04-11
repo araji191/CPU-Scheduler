@@ -20,3 +20,30 @@ void print_results(Process processes[], int n, const char* algorithm) {
     printf("\nAverage Turnaround Time: %.2f\n", avg_tat);
     printf("Average Waiting Time: %.2f\n", avg_wt);
 }
+
+void gantt(Process processes[], int n)
+{
+    int max_p = 0;
+    int max_l = 0;
+    int end, len;
+
+    for (int i = 0; i < n; i++)
+    {
+        end = processes[i].arrival_time + processes[i].burst_time;
+        if (end > max_p)
+            max_p = end;
+        len = strlen(processes[i].name);
+        if (len > max_l)
+            max_l = len;
+    }
+    printf("%*s", max_l + 2, "");
+    for (int p = 0; p <= max_p; i++)
+    {
+        printf("%-2d", p);
+        printf("\n");
+        for (i = 0; i < n; i++)
+        {
+            printf("%-*s |%*s%.*s\n", max_l, processes[i].name, processes[i].arrival_time*2, " ", processes[i].burst_time*2, "------------------------------");
+        }
+    }
+}
