@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "print_output.h"
 
 void print_results(Process processes[], int n, const char* algorithm) {
@@ -19,8 +21,11 @@ void print_results(Process processes[], int n, const char* algorithm) {
     
     printf("\nAverage Turnaround Time: %.2f\n", avg_tat);
     printf("Average Waiting Time: %.2f\n", avg_wt);
+
+    //gantt(processes, n);
 }
 
+/*
 void gantt(Process processes[], int n)
 {
     int max_p = 0;
@@ -47,3 +52,4 @@ void gantt(Process processes[], int n)
         }
     }
 }
+*/
