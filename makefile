@@ -1,19 +1,25 @@
-all: main
+all: cpu_scheduler
 
-main: main.o fcfs.o sjf.o rr.o
-	gcc -o main main.o fcfs.o sjf.o rr.o
+cpu_scheduler: cpu_scheduler.o fcfs.o pre_sjf.o nonpre_sjf.o round_robin.o read_input.o process.h algorithms.h
+	gcc -o cpu_scheduler cpu_scheduler.o fcfs.o pre_sjf.o nonpre_sjf.o round_robin.o read_input.o
 
-main.o: main.c
-	gcc -c main.c
+cpu_scheduler.o: cpu_scheduler.c
+	gcc -c cpu_scheduler.c
+
+read_input.o: read_input.c
+	gcc -c read_input.c
 
 fcfs.o: fcfs.c
 	gcc -c fcfs.c
 
-sjf.o: sjf.c
-	gcc -c sjf.c
+pre_sjf.o: pre_sjf.c
+	gcc -c pre_sjf.c
 
-rr.o: rr.c
-	gcc -c rr.c
+nonpre_sjf.o: nonpre_sjf.c
+	gcc -c nonpre_sjf.c
+
+round_robin.o: round_robin.c
+	gcc -c round_robin.c
 
 clean:
-	rm -f *.o *.c~ *.h~  main
+	rm -f *.o *.c~ *.h~  cpu_scheduler
