@@ -1,5 +1,6 @@
 /* main.c */
-#include "schedulers.h"
+#include "algorithms.h"
+#include "process.h"
 #include <stdio.h>
 
 void print_results(Process processes[], int n, const char* algorithm) {

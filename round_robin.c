@@ -1,4 +1,6 @@
-#include "schedulers.h"
+#include "algorithms.h"
+#include "process.h"
+
 #include <stdio.h>
 
 void round_robin(Process processes[], int n, int quantum) {
