@@ -37,11 +37,11 @@ void gantt(Process processes[], int n)
             max_l = len;
     }
     printf("%*s", max_l + 2, "");
-    for (int p = 0; p <= max_p; i++)
+    for (int p = 0; p <= max_p; p++)
     {
         printf("%-2d", p);
         printf("\n");
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
             printf("%-*s |%*s%.*s\n", max_l, processes[i].name, processes[i].arrival_time*2, " ", processes[i].burst_time*2, "------------------------------");
         }
