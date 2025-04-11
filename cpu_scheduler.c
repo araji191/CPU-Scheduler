@@ -76,10 +76,10 @@ int main(int argc, char *argv[]) {
     sjf_preemptive(temp, n);
     print_results(temp, n, "Preemptive Shortest Job First (SJF)");
 
-    // Round Robin
+    // Round Robin with user-specified quantum
     for (int i = 0; i < n; i++) temp[i] = processes[i];
     round_robin(temp, n, quantum);
     print_results(temp, n, "Round Robin");
-
+    
     return 0;
 }
