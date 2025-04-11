@@ -11,7 +11,6 @@ typedef struct Process {
   int turnaround_time;
 } Process;
 
-
 void fcfs(Process processes[], int n);
 void sjf_non_preemptive(Process processes[], int n);
 void sjf_preemptive(Process processes[], int n);
