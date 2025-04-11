@@ -1,6 +1,7 @@
 /* cpu_scheduler.c */
 #include "algorithms.h"
 #include "process.h"
+#include "print_output"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
