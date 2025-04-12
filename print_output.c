@@ -2,6 +2,16 @@
 #include <string.h>
 #include "print_output.h"
 
+void print_legend() {
+    printf("\nLegend\n");
+    printf("----------------------\n");
+    printf("AT = Arrival Time\n");
+    printf("BT = Burst Time\n");
+    printf("CT = Completion Time\n");
+    printf("TAT = Turnaround Time\n");
+    printf("WT = Wait Time\n");
+}
+
 void print_results(Process processes[], int n, const char* algorithm) {
     float avg_tat = 0, avg_wt = 0;
     
