@@ -1,4 +1,4 @@
-all: cpu_scheduler
+all: cpu_scheduler clean_others
 
 cpu_scheduler: cpu_scheduler.o fcfs.o pre_sjf.o nonpre_sjf.o round_robin.o read_input.o process.h algorithms.h print_output.o
 	gcc -o cpu_scheduler cpu_scheduler.o fcfs.o pre_sjf.o nonpre_sjf.o round_robin.o read_input.o print_output.o
@@ -26,3 +26,6 @@ round_robin.o: round_robin.c
 
 clean:
 	rm -f *.o *.c~ *.h~  cpu_scheduler
+
+clean_others:
+	rm -f *.o *.c~ *.h~

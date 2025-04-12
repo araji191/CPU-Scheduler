@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
             printf("Failed to read input file: %s\n", filepath);
             return 1;
         }
+        printf("\nSuccessfully read from %s!\n", filepath);
+
     } else if (argc == 1) {
         if (!read_standard_input(processes, &n, &quantum)) {
             printf("Failed to read standard input.\n");
@@ -29,6 +31,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
+    print_legend();
+
     // FCFS
     for (int i = 0; i < n; i++) temp[i] = processes[i];
     fcfs(temp, n);
