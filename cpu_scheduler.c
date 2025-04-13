@@ -10,10 +10,16 @@
 #define MAX_PROCESSES 100
 #define MAX_INTERVALS 1000
 
+void prepare_processes(Process dest[], Process src[], int n) {
+    for (int i = 0; i < n; i++) {
+        dest[i] = src[i];
+        dest[i].process_id = i + 1;
+    }
+}
+
 int main(int argc, char *argv[]) {
     int n, quantum;
     Process processes[MAX_PROCESSES], temp[MAX_PROCESSES];
-
     GanttInterval intervals[MAX_INTERVALS];
     int interval_count;
 
@@ -21,61 +27,31 @@ int main(int argc, char *argv[]) {
         char filepath[200];
         snprintf(filepath, sizeof(filepath), "testcases/%s", argv[1]);
         if (!read_file_input(filepath, processes, &n, &quantum)) {
-            printf("Failed to read input file: %s\n", filepath);
+            printf("Failed to read input file: %s", filepath);
             return 1;
         }
     } else if (argc == 1) {
-        printf("Enter number of processes: ");
-        scanf("%d", &n);
-        printf("Enter process details (Name ArrivalTime BurstTime):\n");
-        for (int i = 0; i < n; i++) {
-            scanf("%s %d %d", processes[i].name, &processes[i].arrival_time, &processes[i].burst_time);
-            processes[i].remaining_time = processes[i].burst_time;
-        }
-
-        printf("\nEnter time quantum for Round Robin: ");
-        scanf("%d", &quantum);
-
+        if (!read_standard_input(processes, &n, &quantum)) return 1;
     } else {
-        printf("Usage: %s [input_file]\n", argv[0]);
+        printf("Usage: %s [input_file]", argv[0]);
         return 1;
     }
 
-     // FCFS
-    interval_count = 0;
-    for (int i = 0; i < n; i++) {
-      processes[i].process_id = i + 1; 
-      temp[i] = processes[i];
-    }
-    fcfs(temp, n, intervals, &interval_count);
-    print_results(temp, n, "FCFS", intervals, interval_count);
+    struct { char *name; void (*func)(Process[], int, GanttInterval[], int *); } algos[] = {
+        {"FCFS", fcfs},
+        {"Non-preemptive SJF", sjf_non_preemptive},
+        {"Preemptive SJF", sjf_preemptive}
+    };
 
-    // Non-Preemptive SJF
-    interval_count = 0;
-    interval_count = 0;
-    for (int i = 0; i < n; i++) {
-      temp[i] = processes[i];             // Copy original
-      temp[i].process_id = i + 1;         // ✅ Assign ID to the copy (NOT to processes[])
+    for (int i = 0; i < 3; i++) {
+        interval_count = 0;
+        prepare_processes(temp, processes, n);
+        algos[i].func(temp, n, intervals, &interval_count);
+        print_results(temp, n, algos[i].name, intervals, interval_count);
     }
 
-    sjf_non_preemptive(temp, n, intervals, &interval_count);
-    print_results(temp, n, "SJF", intervals, interval_count);
-
-    // Preemptive SJF
     interval_count = 0;
-    for (int i = 0; i < n; i++) {
-      processes[i].process_id = i + 1;
-      temp[i] = processes[i];
-    }    
-    sjf_preemptive(temp, n, intervals, &interval_count);
-    print_results(temp, n, "SRTF", intervals, interval_count);
-
-    // Round Robin
-    interval_count = 0;
-    for (int i = 0; i < n; i++) {
-      processes[i].process_id = i + 1;
-      temp[i] = processes[i];
-    }
+    prepare_processes(temp, processes, n);
     round_robin(temp, n, quantum, intervals, &interval_count);
     print_results(temp, n, "Round Robin", intervals, interval_count);
 
