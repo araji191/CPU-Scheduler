@@ -1,3 +1,6 @@
+/*
+* print_output.c
+*/
 #include "print_output.h"
 
 void print_results(Process processes[], int n, const char* algorithm) {

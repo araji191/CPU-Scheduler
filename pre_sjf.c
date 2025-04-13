@@ -1,3 +1,10 @@
+/*
+* pre_sjf.c
+*
+* This file implements the Preemptive Shortest Job First (SJF) CPU scheduling algorithm.
+* The scheduler always selects the process with the shortest remaining execution time,
+* preempting the current process if a shorter one becomes available.
+*/
 #include "algorithms.h"
 #include "process.h"
 

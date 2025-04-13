@@ -1,3 +1,11 @@
+/*
+* round_robin.c
+*
+* This file implements the Round Robin CPU scheduling algorithm.
+* It schedules processes by giving each process a fixed time quantum,
+* updating process metrics (completion, turnaround, and waiting time)
+* accordingly.
+*/
 #include "algorithms.h"
 #include "process.h"
 

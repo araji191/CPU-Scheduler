@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "process.h"
+/*
+* read_input.c
+*/
+#include "read_input.h"
 
 int read_input_file(const char *filename, Process processes[], int *num_processes, int *quantum) {
     FILE *file = fopen(filename, "r");
