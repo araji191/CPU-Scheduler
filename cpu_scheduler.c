@@ -1,8 +1,15 @@
-/*
-* cpu_scheduler.c
+/* 
+* cpu_scheduler.c 
 *
-* Main driver for running and comparing scheduling algorithms:
-* FCFS, SJF (non-preemptive and preemptive), and Round Robin.
+* Contains the main function of a CPU scheduler that compares four algorithms:
+*   - First Come First Served (FCFS)
+*   - Non-Preemptive Shortest Job First (SJF)
+*   - Preemptive Shortest Job First (SJF)
+*   - Round Robin
+* 
+* The program can read input from a file and run all scheduling algorithms
+* on the same set of processes. It then displays the results including
+* metrics of each individual process and average turnaround and waiting times.
 */
 
 #include "algorithms.h"
