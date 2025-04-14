@@ -95,25 +95,4 @@ void print_legend();
 */
 void print_output(FILE *output, const char *format, ...);
 
-/*
-* print_nonp_gantt_chart
-*
-* Purpose:
-*   Prints a simplified Gantt chart for non-preemptive scheduling algorithms,
-*   assuming uninterrupted process execution.
-*
-* Inputs:
-*   - output: Output stream to print to.
-*   - processes: Array of Process structures.
-*   - num_processes: Number of processes to display.
-*
-* Output:
-*   - void: Gantt chart is printed directly to the output stream.
-*
-* Assumptions:
-*   - Processes are sorted in the order of execution.
-*   - Timing fields (start, completion time) are initialized.
-*/
-void print_nonp_gantt_chart(FILE *output, Process *processes, int num_processes);
-
 #endif
