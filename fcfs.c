@@ -1,5 +1,6 @@
 #include "algorithms.h"
 #include "process.h"
+
 #include <stdio.h>
 
 void fcfs(Process processes[], int n, GanttInterval intervals[], int *interval_count) {

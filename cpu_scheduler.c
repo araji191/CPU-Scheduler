@@ -3,12 +3,10 @@
 #include "print_output.h"
 #include "read_input.h"
 #include "constants.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_PROCESSES 100
-#define MAX_INTERVALS 1000
 
 void prepare_processes(Process dest[], Process src[], int n) {
     for (int i = 0; i < n; i++) {
@@ -38,10 +36,12 @@ int main(int argc, char *argv[]) {
     }
 
     struct { char *name; void (*func)(Process[], int, GanttInterval[], int *); } algos[] = {
-        {"FCFS", fcfs},
-        {"Non-preemptive SJF", sjf_non_preemptive},
-        {"Preemptive SJF", sjf_preemptive}
+        {"First-Come, First-Served (FCFS)", fcfs},
+        {"Non-preemptive Shortest Job First (SJF)", sjf_non_preemptive},
+        {"Preemptive Shortest Job First (SJF)", sjf_preemptive}
     };
+
+    print_legend();
 
     for (int i = 0; i < 3; i++) {
         interval_count = 0;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     interval_count = 0;
     prepare_processes(temp, processes, n);
     round_robin(temp, n, quantum, intervals, &interval_count);
-    print_results(temp, n, "Round Robin", intervals, interval_count);
+    print_results(temp, n, "Round Robin (RR)", intervals, interval_count);
 
     return 0;
 }
