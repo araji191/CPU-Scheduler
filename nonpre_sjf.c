@@ -1,3 +1,11 @@
+/*
+* nonpre_sjf.c
+*
+* This file implements the Non-Preemptive Shortest Job First (SJF) CPU scheduling algorithm.
+* The scheduler selects the process with the shortest burst time that has arrived,
+* and runs it to completion without preemption.
+*/
+
 #include "process.h"
 #include "algorithms.h"
 #include <limits.h>

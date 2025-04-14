@@ -1,3 +1,17 @@
+/* 
+* cpu_scheduler.c 
+*
+* Contains the main function of a CPU scheduler that compares four algorithms:
+*   - First Come First Served (FCFS)
+*   - Non-Preemptive Shortest Job First (SJF)
+*   - Preemptive Shortest Job First (SJF)
+*   - Round Robin
+* 
+* The program can read input from a file and run all scheduling algorithms
+* on the same set of processes. It then displays the results including
+* metrics of each individual process and average turnaround and waiting times.
+*/
+
 #include "algorithms.h"
 #include "process.h"
 #include "print_output.h"
@@ -15,6 +29,28 @@ void prepare_processes(Process dest[], Process src[], int n) {
     }
 }
 
+/*
+* main
+*
+* Purpose:
+*   Coordinates the CPU scheduling simulation by reading process data,
+*   running all scheduling algorithms on the same set of processes,
+*   and displaying the results.
+*
+* Inputs:
+*   - argc: Argument counter.
+*   - argv: Argument vector.
+*
+* Output:
+*   - int: Returns 0 if successful, 1 if there's an error.
+*
+* Assumptions:
+*   - If reading from a file, file is in 'testcases' folder.
+*   - Number of processes is under or equal to maximum.
+*
+* Limitations:
+*   - Fixed process limit.
+*/
 int main(int argc, char *argv[]) {
     int n, quantum;
     Process processes[MAX_PROCESSES], temp[MAX_PROCESSES];
