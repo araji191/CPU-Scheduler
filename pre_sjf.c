@@ -5,52 +5,82 @@
 * The scheduler always selects the process with the shortest remaining execution time,
 * preempting the current process if a shorter one becomes available.
 */
+
 #include "algorithms.h"
 #include "process.h"
-
-#include <stdio.h>
 #include <limits.h>
 
-void sjf_preemptive(Process processes[], int n) {
-    int completed = 0, time = 0;
+void initialize_sjf_processes(Process processes[], int n);
+int select_shortest_remaining_process(Process processes[], int n, int time);
+void update_gantt_chart_sjf(GanttInterval intervals[], int *interval_count, int process_id, int time);
+void finalize_process_if_complete(Process *p, int time, int *completed);
 
-    // Initialize remaining times
-    for (int i = 0; i < n; i++) {
-        processes[i].remaining_time = processes[i].burst_time;
-    }
+void sjf_preemptive(Process processes[], int n, GanttInterval intervals[], int *interval_count) {
+    int time = 0, completed = 0;
+    *interval_count = 0;
+
+    initialize_sjf_processes(processes, n);
 
     while (completed < n) {
-        int min_idx = -1;
-        int min_remaining = INT_MAX;
+        int idx = select_shortest_remaining_process(processes, n, time);
 
-        // Find process with shortest remaining time
-        for (int i = 0; i < n; i++) {
-            if (processes[i].arrival_time <= time &&
-                processes[i].remaining_time > 0 &&
-                processes[i].remaining_time < min_remaining) {
-                min_remaining = processes[i].remaining_time;
-                min_idx = i;
-            }
-        }
-
-        if (min_idx == -1) {
+        if (idx == -1) {
             time++;
             continue;
         }
 
-        // Execute the process for 1 unit
-        processes[min_idx].remaining_time--;
+        Process *p = &processes[idx];
 
-        // Check if process completed
-        if (processes[min_idx].remaining_time == 0) {
-            completed++;
-            processes[min_idx].completion_time = time + 1;
-            processes[min_idx].turnaround_time = 
-                processes[min_idx].completion_time - processes[min_idx].arrival_time;
-            processes[min_idx].waiting_time = 
-                processes[min_idx].turnaround_time - processes[min_idx].burst_time;
+        if (!p->started) {
+            p->started = 1;
+            p->response_time = time - p->arrival_time;
         }
 
-        time++;  // Correct position: increment after processing
+        update_gantt_chart_sjf(intervals, interval_count, p->process_id, time);
+
+        p->remaining_time--;
+        time++;
+
+        finalize_process_if_complete(p, time, &completed);
+    }
+}
+
+void initialize_sjf_processes(Process processes[], int n) {
+    for (int i = 0; i < n; i++) {
+        processes[i].remaining_time = processes[i].burst_time;
+        processes[i].started = 0;
+    }
+}
+
+int select_shortest_remaining_process(Process processes[], int n, int time) {
+    int idx = -1, min_rt = INT_MAX;
+    for (int i = 0; i < n; i++) {
+        if (processes[i].arrival_time <= time &&
+            processes[i].remaining_time > 0 &&
+            processes[i].remaining_time < min_rt) {
+            min_rt = processes[i].remaining_time;
+            idx = i;
+        }
+    }
+    return idx;
+}
+
+void update_gantt_chart_sjf(GanttInterval intervals[], int *interval_count, int process_id, int time) {
+    if (*interval_count == 0 || intervals[*interval_count - 1].process_id != process_id) {
+        intervals[*interval_count].start_time = time;
+        intervals[*interval_count].end_time = time + 1;
+        intervals[*interval_count].process_id = process_id;
+        (*interval_count)++;
+    } else {
+        intervals[*interval_count - 1].end_time++;
+    }
+}
+
+void finalize_process_if_complete(Process *p, int time, int *completed) {
+    if (p->remaining_time == 0) {
+        p->completion_time = time;
+        p->turnaround_time = time - p->arrival_time;
+        p->waiting_time = p->turnaround_time - p->burst_time;
+        (*completed)++;
     }
 }

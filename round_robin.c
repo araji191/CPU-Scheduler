@@ -8,56 +8,99 @@
 */
 #include "algorithms.h"
 #include "process.h"
+#include <stdbool.h>
 
-#include <stdio.h>
+void initialize_processes(Process processes[], int n, bool in_queue[]);
+void enqueue_initial_processes(Process processes[], int n, int queue[], int *rear, bool in_queue[]);
+void enqueue_new_arrivals(Process processes[], int n, int time, int queue[], int *rear, bool in_queue[]);
+int handle_idle_time(Process processes[], int n, int *time, int queue[], int *rear, bool in_queue[]);
+void execute_process(Process *p, int quantum, int *time, GanttInterval intervals[], int *interval_count);
 
-void round_robin(Process processes[], int n, int quantum) {
-    int time = 0, completed = 0, front = 0, rear = 0;
-    int queue[100], visited[n];
-    for (int i = 0; i < n; i++) visited[i] = 0;
+void round_robin(Process processes[], int n, int quantum, GanttInterval intervals[], int *interval_count) {
+    int time = 0, completed = 0;
+    int queue[1000];
+    int front = 0, rear = 0;
+    bool in_queue[n];
+    *interval_count = 0;
 
-    int remaining[n];
-    for (int i = 0; i < n; i++) remaining[i] = processes[i].burst_time;
-
-    queue[rear++] = 0;
-    visited[0] = 1;
+    initialize_processes(processes, n, in_queue);
+    enqueue_initial_processes(processes, n, queue, &rear, in_queue);
 
     while (completed < n) {
+        if (front == rear) {
+            handle_idle_time(processes, n, &time, queue, &rear, in_queue);
+            continue;
+        }
+
         int idx = queue[front++];
-        if (remaining[idx] > quantum) {
-            time += quantum;
-            remaining[idx] -= quantum;
-        } else {
-            time += remaining[idx];
-            remaining[idx] = 0;
-            completed++;
-            processes[idx].completion_time = time;
-            processes[idx].turnaround_time = time - processes[idx].arrival_time;
-            processes[idx].waiting_time = processes[idx].turnaround_time - processes[idx].burst_time;
-        }
+        Process *p = &processes[idx];
 
-        // Check and enqueue newly arrived processes
-        for (int i = 0; i < n; i++) {
-            if (!visited[i] && processes[i].arrival_time <= time && remaining[i] > 0) {
-                queue[rear++] = i;
-                visited[i] = 1;
-            }
-        }
+	execute_process(p, quantum, &time, intervals, interval_count);
+        enqueue_new_arrivals(processes, n, time, queue, &rear, in_queue);
 
-        // Re-add current process if it's not done
-        if (remaining[idx] > 0)
+        if (p->remaining_time > 0) {
             queue[rear++] = idx;
-
-        // If queue is empty but there are still processes, jump time to next arrival
-        if (front == rear && completed < n) {
-            for (int i = 0; i < n; i++) {
-                if (remaining[i] > 0) {
-                    queue[rear++] = i;
-                    visited[i] = 1;
-                    time = processes[i].arrival_time;
-                    break;
-                }
-            }
+        } else {
+            p->completion_time = time;
+            p->turnaround_time = time - p->arrival_time;
+            p->waiting_time = p->turnaround_time - p->burst_time;
+            completed++;
         }
     }
+}
+
+void initialize_processes(Process processes[], int n, bool in_queue[]) {
+    for (int i = 0; i < n; i++) {
+        processes[i].remaining_time = processes[i].burst_time;
+        in_queue[i] = false;
+    }
+}
+
+void enqueue_initial_processes(Process processes[], int n, int queue[], int *rear, bool in_queue[]) {
+    for (int i = 0; i < n; i++) {
+        if (processes[i].arrival_time == 0) {
+            queue[(*rear)++] = i;
+            in_queue[i] = true;
+        }
+    }
+}
+
+void enqueue_new_arrivals(Process processes[], int n, int time, int queue[], int *rear, bool in_queue[]) {
+    for (int i = 0; i < n; i++) {
+        if (!in_queue[i] && processes[i].arrival_time <= time) {
+            queue[(*rear)++] = i;
+            in_queue[i] = true;
+        }
+    }
+}
+
+int handle_idle_time(Process processes[], int n, int *time, int queue[], int *rear, bool in_queue[]) {
+    int next_arrival = 1e9;
+    for (int i = 0; i < n; i++) {
+        if (!in_queue[i] && processes[i].remaining_time > 0) {
+            if (processes[i].arrival_time < next_arrival)
+                next_arrival = processes[i].arrival_time;
+        }
+    }
+    if (next_arrival != 1e9) {
+        *time = next_arrival;
+        enqueue_new_arrivals(processes, n, *time, queue, rear, in_queue);
+    }
+    return *time;
+}
+
+void execute_process(Process *p, int quantum, int *time, GanttInterval intervals[], int *interval_count) {
+    int exec_time = (p->remaining_time > quantum) ? quantum : p->remaining_time;
+
+    if (*interval_count == 0 || intervals[*interval_count - 1].process_id != p->process_id) {
+        intervals[*interval_count].start_time = *time;
+        intervals[*interval_count].end_time = *time + exec_time;
+        intervals[*interval_count].process_id = p->process_id;
+        (*interval_count)++;
+    } else {
+        intervals[*interval_count - 1].end_time += exec_time;
+    }
+
+    *time += exec_time;
+    p->remaining_time -= exec_time;
 }

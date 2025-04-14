@@ -9,6 +9,7 @@
 * Each algorithm takes an array of processes and computes scheduling metrics
 * (completion time, turnaround time, waiting time).
 */
+
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
@@ -33,7 +34,7 @@
 *   - Processes are sorted by arrival time.
 *   - Process burst times are positive values.
 */
-void fcfs(Process processes[], int n);
+void fcfs(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
 /*
 * sjf_non_preemptive
@@ -59,7 +60,7 @@ void fcfs(Process processes[], int n);
 * Limitations:
 *   - No handling for processes with equal burst times.
 */
-void sjf_non_preemptive(Process processes[], int n);
+void sjf_non_preemptive(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
 /*
 * sjf_preemptive
@@ -84,7 +85,7 @@ void sjf_non_preemptive(Process processes[], int n);
  *  Limitations:
  *   - No error checking for invalid process data.
 */
-void sjf_preemptive(Process processes[], int n);
+void sjf_preemptive(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
 /*
 * round_robin
@@ -111,6 +112,6 @@ void sjf_preemptive(Process processes[], int n);
 * Limitations:
 *   - Queue is a fixed-size.
 */
-void round_robin(Process processes[], int n, int quantum);
+void round_robin(Process processes[], int n, int quantum, GanttInterval intervals[], int *interval_count);
 
 #endif
