@@ -1,5 +1,5 @@
 /*
-* algorithms.h
+* constants.h
 */
 
 #ifndef CONSTANTS_H
