@@ -9,7 +9,7 @@
 
 int is_valid_process_name(const char *name);
 
-static int parse_process_line(char *line, Process *p) {
+int parse_process_line(char *line, Process *p) {
     char name[32];
     int arrival, burst;
     if (sscanf(line, "%s %d %d", name, &arrival, &burst) != 3) return 0;

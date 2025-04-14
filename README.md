@@ -52,45 +52,65 @@ The simulator then calculates and displays the average turnaround time and avera
 ### Example Output
 
 ```
+Legend
+----------------------
+AT = Arrival Time
+BT = Burst Time
+CT = Completion Time
+TAT = Turnaround Time
+WT = Wait Time
+
 === First-Come, First-Served (FCFS) ===
-Name    AT      BT      CT      TAT     WT
-P1      0       5       5       5       0
-P2      1       3       8       7       4
-P3      2       8       16      14      6
-P4      3       6       22      19      13
+Name	AT	BT	CT	TAT	WT
+P1	0	5	5	5	0
+P2	1	3	8	7	4
+P3	2	8	16	14	6
+P4	3	6	22	19	13
 
 Average Turnaround Time: 11.25
 Average Waiting Time: 5.75
+Gantt Chart:
+| P1 -----| P2 ---| P3 --------| P4 ------|
+0         5       8           16         22
 
-=== Non-Preemptive Shortest Job First (SJF) ===
-Name    AT      BT      CT      TAT     WT
-P1      0       5       5       5       0
-P2      1       3       8       7       4
-P3      2       8       22      20      12
-P4      3       6       14      11      5
+=== Non-preemptive Shortest Job First (SJF) ===
+Name	AT	BT	CT	TAT	WT
+P1	0	5	5	5	0
+P2	1	3	8	7	4
+P3	2	8	22	20	12
+P4	3	6	14	11	5
 
 Average Turnaround Time: 10.75
 Average Waiting Time: 5.25
+Gantt Chart:
+| P1 -----| P2 ---| P4 ------| P3 --------|
+0         5       8         14           22
 
 === Preemptive Shortest Job First (SJF) ===
-Name    AT      BT      CT      TAT     WT
-P1      0       5       8       8       3
-P2      1       3       4       3       0
-P3      2       8       22      20      12
-P4      3       6       14      11      5
+Name	AT	BT	CT	TAT	WT
+P1	0	5	8	8	3
+P2	1	3	4	3	0
+P3	2	8	22	20	12
+P4	3	6	14	11	5
 
 Average Turnaround Time: 10.50
 Average Waiting Time: 5.00
+Gantt Chart:
+| P1 -| P2 ---| P1 ----| P4 ------| P3 --------|
+0     1       4        8         14           22
 
-=== Round Robin ===
-Name    AT      BT      CT      TAT     WT
-P1      0       5       13      13      8
-P2      1       3       8       7       4
-P3      2       8       22      20      12
-P4      3       6       21      18      12
+=== Round Robin (RR) ===
+Name	AT	BT	CT	TAT	WT
+P1	0	5	14	14	9
+P2	1	3	11	10	7
+P3	2	8	22	20	12
+P4	3	6	20	17	11
 
-Average Turnaround Time: 14.50
-Average Waiting Time: 9.00
+Average Turnaround Time: 15.25
+Average Waiting Time: 9.75
+Gantt Chart:
+| P1 --| P2 --| P3 --| P1 --| P4 --| P2 -| P3 --| P1 -| P4 --| P3 --| P4 --| P3 --|
+0      2      4      6      8     10    11     13    14     16     18     20     22
 ```
 
 ## Project Implementation
@@ -122,6 +142,19 @@ Average Waiting Time: 9.00
 - `print_results()`: Displays scheduling results for each algorithm
 - Formats output to show process details and performance metrics
 
+## Gantt Chart Output
+
+For each scheduling algorithm, the simulator generates a visual Gantt Chart that represents the execution timeline of the processes. This is useful for visually inspecting how processes are scheduled and how CPU time is shared or allocated.
+
+Example:
+```
+Gantt Chart:
+| P1 -----| P2 ---| P3 --------| P4 ------|
+0        5       8           16         22
+```
+
+Each bar represents a process running during a specific time slice. The labels on the bottom indicate the timeline in units of CPU time.
+
 #### Main Program (`cpu_scheduler.c`)
 - Handles program execution
 - Processes input data
@@ -151,6 +184,22 @@ The project implements four classic CPU scheduling algorithms:
 - Each process gets equal time slice (quantum)
 - Processes are executed in a circular fashion
 - Provides fair CPU distribution but may increase context switching overhead
+
+## Automated Test Execution
+
+A script named `run_tests.sh` is provided to automate testing of the scheduler against multiple input files located in the `testcases` directory.
+
+To run all test cases and store the results in `testcase_results.txt`:
+```bash
+./run_tests.sh
+```
+
+Make sure `cpu_scheduler` is compiled before running the script:
+```bash
+make
+chmod +x run_tests.sh
+./run_tests.sh
+```
 
 ## Usage
 

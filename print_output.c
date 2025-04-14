@@ -35,11 +35,11 @@ void print_results(Process processes[], int n, const char* algorithm,
     printf("Average Waiting Time: %.2f\n", avg_wt);
 
     // === Print Gantt Chart ===
-    if (strcmp(algorithm, "FCFS") == 0 ||
-        strcmp(algorithm, "SJF") == 0 ||
-	strcmp(algorithm, "SRTF") == 0 ||
-	strcmp(algorithm, "Round Robin") == 0 && intervals != NULL) {
-        print_gantt_chart(stdout, processes, n, intervals, interval_count);
+    if (strcmp(algorithm, "First-Come, First-Served (FCFS)") == 0 ||
+        strcmp(algorithm, "Non-preemptive Shortest Job First (SJF)") == 0 ||
+	      strcmp(algorithm, "Preemptive Shortest Job First (SJF)") == 0 ||
+	      strcmp(algorithm, "Round Robin (RR)") == 0 && intervals != NULL) {
+          print_gantt_chart(stdout, processes, n, intervals, interval_count);
     } else {
         printf("Gantt chart not available for this algorithm or data.\n");
     }
@@ -54,7 +54,6 @@ void print_output(FILE *output, const char *format, ...) {
 
 void print_gantt_chart(FILE *output, Process *processes, int num_processes, GanttInterval *intervals, int interval_count) {
   print_output(output, "Gantt Chart:\n");
-
 
   // Print processes with their burst times
   for (int i = 0; i < interval_count; i++) {
