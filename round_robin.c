@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 
+//Helper Functions
 void initialize_processes(Process processes[], int n, bool in_queue[]);
 void enqueue_initial_processes(Process processes[], int n, int queue[], int *rear, bool in_queue[]);
 void enqueue_new_arrivals(Process processes[], int n, int time, int queue[], int *rear, bool in_queue[]);
@@ -19,26 +20,28 @@ void execute_process(Process *p, int quantum, int *time, GanttInterval intervals
 
 void round_robin(Process processes[], int n, int quantum, GanttInterval intervals[], int *interval_count) {
     int time = 0, completed = 0;
-    int queue[1000];
+    int queue[1000]; //for ready processes
     int front = 0, rear = 0;
-    bool in_queue[n];
+    bool in_queue[n]; //Tracks which processes are queued
     *interval_count = 0;
 
     initialize_processes(processes, n, in_queue);
     enqueue_initial_processes(processes, n, queue, &rear, in_queue);
 
     while (completed < n) {
+        //Handle CPU idle time when queue is empty
         if (front == rear) {
             handle_idle_time(processes, n, &time, queue, &rear, in_queue);
             continue;
         }
 
-        int idx = queue[front++];
+        int idx = queue[front++]; //Dequeue next process
         Process *p = &processes[idx];
 
-	execute_process(p, quantum, &time, intervals, interval_count);
+	    execute_process(p, quantum, &time, intervals, interval_count);
         enqueue_new_arrivals(processes, n, time, queue, &rear, in_queue);
 
+        //Requeue if not finished, else finalize
         if (p->remaining_time > 0) {
             queue[rear++] = idx;
         } else {
@@ -50,6 +53,7 @@ void round_robin(Process processes[], int n, int quantum, GanttInterval interval
     }
 }
 
+/*Initialize process remaining times and queue status*/
 void initialize_processes(Process processes[], int n, bool in_queue[]) {
     for (int i = 0; i < n; i++) {
         processes[i].remaining_time = processes[i].burst_time;
@@ -57,6 +61,7 @@ void initialize_processes(Process processes[], int n, bool in_queue[]) {
     }
 }
 
+/*Queue processes that arrive on time 0*/
 void enqueue_initial_processes(Process processes[], int n, int queue[], int *rear, bool in_queue[]) {
     for (int i = 0; i < n; i++) {
         if (processes[i].arrival_time == 0) {
@@ -66,6 +71,7 @@ void enqueue_initial_processes(Process processes[], int n, int queue[], int *rea
     }
 }
 
+/*Add newly arrived processes to the queue*/
 void enqueue_new_arrivals(Process processes[], int n, int time, int queue[], int *rear, bool in_queue[]) {
     for (int i = 0; i < n; i++) {
         if (!in_queue[i] && processes[i].arrival_time <= time) {
@@ -75,6 +81,7 @@ void enqueue_new_arrivals(Process processes[], int n, int time, int queue[], int
     }
 }
 
+/*Advance time to next process arrival when CPU is idle*/
 int handle_idle_time(Process processes[], int n, int *time, int queue[], int *rear, bool in_queue[]) {
     int next_arrival = 1e9;
     for (int i = 0; i < n; i++) {
@@ -90,6 +97,7 @@ int handle_idle_time(Process processes[], int n, int *time, int queue[], int *re
     return *time;
 }
 
+/*Execute process for quantum or remaining time, update Gantt chart*/
 void execute_process(Process *p, int quantum, int *time, GanttInterval intervals[], int *interval_count) {
     int exec_time = (p->remaining_time > quantum) ? quantum : p->remaining_time;
 
