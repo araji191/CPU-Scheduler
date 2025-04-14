@@ -22,12 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void prepare_processes(Process dest[], Process src[], int n) {
-    for (int i = 0; i < n; i++) {
-        dest[i] = src[i];
-        dest[i].process_id = i + 1;
-    }
-}
+void prepare_processes(Process dest[], Process src[], int n);
 
 /*
 * main
@@ -92,4 +87,11 @@ int main(int argc, char *argv[]) {
     print_results(temp, n, "Round Robin (RR)", intervals, interval_count);
 
     return 0;
+}
+
+void prepare_processes(Process dest[], Process src[], int n) {
+    for (int i = 0; i < n; i++) {
+        dest[i] = src[i];
+        dest[i].process_id = i + 1;
+    }
 }

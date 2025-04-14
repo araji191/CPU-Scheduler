@@ -8,6 +8,7 @@
 
 #include "process.h"
 #include "algorithms.h"
+
 #include <limits.h>
 
 void initialize_completion_flags(int is_completed[], int n);

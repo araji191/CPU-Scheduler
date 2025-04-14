@@ -2,9 +2,10 @@
 * print_output.c
 */
 
+#include "print_output.h"
+
 #include <stdio.h>
 #include <string.h>
-#include "print_output.h"
 #include <stdarg.h>
 
 void print_legend() {
