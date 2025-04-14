@@ -1,13 +1,15 @@
 /*
 * algorithms.h
 *
-* This file contains the declerations for 4 CPU scheduling algorithms:
-*   - First Come First Served (FCFS)
-*   - Non-Preemtive Shortest Job First (SJF)
+* This file contains function declarations for four CPU scheduling algorithms:
+*   - First-Come, First-Served (FCFS)
+*   - Non-Preemptive Shortest Job First (SJF)
 *   - Preemptive Shortest Job First (SJF)
 *   - Round Robin
-* Each algorithm takes an array of processes and computes scheduling metrics
-* (completion time, turnaround time, waiting time).
+*
+* Each algorithm schedules an array of Process structures and calculates scheduling
+* metrics such as completion time, turnaround time, and waiting time. They also populate
+* a Gantt chart represented as an array of GanttInterval structures.
 */
 
 #ifndef ALGORITHMS_H
@@ -20,19 +22,21 @@
 *
 * Purpose:
 *   Implements the First-Come, First-Served scheduling algorithm that executes
-*   processes in strict arrival order, calculating timing metrics for each process.
+*   processes strictly in their order of arrival, without preemption.
 *
 * Inputs:
-*   processes - An array of Process structures to be scheduled (ordered by arrival time).
-*   n - Number of processes in the array.
+*   - processes: An array of Process structures sorted by arrival time.
+*   - n: The number of processes in the array.
+*   - intervals: An array to store the Gantt chart intervals for process execution.
+*   - interval_count: Pointer to store the number of intervals generated.
 *
 * Output:
-*   void - The input processes array is modified in-place with updated
-*          timing metrics (completion_time, turnaround_time, waiting_time).
+*   - void: The processes array is modified in-place with updated timing metrics.
+*           The intervals array is filled with Gantt chart data.
 *
 * Assumptions:
 *   - Processes are sorted by arrival time.
-*   - Process burst times are positive values.
+*   - Burst times are positive integers.
 */
 void fcfs(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
@@ -40,25 +44,26 @@ void fcfs(Process processes[], int n, GanttInterval intervals[], int *interval_c
 * sjf_non_preemptive
 *
 * Purpose:
-*   Implements the Non-Preemptive Shortest Job First scheduling algorithm that selects
-*   the process with the shortest burst time and runs it to completion before selecting
-*   the next shortest available job.
+*   Implements the Non-Preemptive Shortest Job First scheduling algorithm.
+*   At each step, selects the shortest burst time process from the ready queue
+*   and runs it to completion.
 *
 * Inputs:
-*   processes - Array of Process structures to be scheduled.
-*   n - Number of processes in the array.
+*   - processes: An array of Process structures to be scheduled.
+*   - n: The number of processes in the array.
+*   - intervals: An array to store the Gantt chart intervals for process execution.
+*   - interval_count: Pointer to store the number of intervals generated.
 *
 * Output:
-*   void - The input processes array is updated with the proper
-*          timing metrics (completion_time, turnaround_time, waiting_time).
+*   - void: The processes array is modified in-place with updated timing metrics.
+*           The intervals array is filled with Gantt chart data.
 *
-* Assumptions: 
-*   - Process arrival times are properly initialized.
-*   - Process burst times are positive values.
-*   - Process array contains 'n' processes.
+* Assumptions:
+*   - Arrival and burst times are valid and initialized.
+*   - Process array has 'n' valid entries.
 *
 * Limitations:
-*   - No handling for processes with equal burst times.
+*   - No special handling for tie-breaking on equal burst times.
 */
 void sjf_non_preemptive(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
@@ -66,24 +71,25 @@ void sjf_non_preemptive(Process processes[], int n, GanttInterval intervals[], i
 * sjf_preemptive
 *
 * Purpose:
-*   Implements the Preemptive Shortest Job First scheduling algorithm that selects
-*   the process with the shortest remaining time at each scheduling point.
+*   Implements the Preemptive Shortest Job First scheduling algorithm (a.k.a. Shortest Remaining Time First).
+*   Continuously chooses the process with the smallest remaining time among all arrived processes.
 *
 * Inputs:
- *   processes - Array of Process structures to be scheduled.
- *   n - Number of processes in the array.
- *
- * Output:
- *   void - The input processes array is modified in-place with updated
- *          timing metrics (completion_time, turnaround_time, waiting_time).
- * 
- * Assumptions:
- *    - Process arrival times are properly initialized
- *    - Process burst times are positive values.
- *    - Process array contains 'n' processes.
- * 
- *  Limitations:
- *   - No error checking for invalid process data.
+*   - processes: An array of Process structures to be scheduled.
+*   - n: The number of processes in the array.
+*   - intervals: An array to store the Gantt chart intervals for process execution.
+*   - interval_count: Pointer to store the number of intervals generated.
+*
+* Output:
+*   - void: The processes array is modified in-place with updated timing metrics.
+*           The intervals array is filled with Gantt chart data.
+*
+* Assumptions:
+*   - All process fields are properly initialized.
+*   - Remaining time field will be initialized inside the function.
+*
+* Limitations:
+*   - No tie-breaking logic for equal remaining times.
 */
 void sjf_preemptive(Process processes[], int n, GanttInterval intervals[], int *interval_count);
 
@@ -91,26 +97,28 @@ void sjf_preemptive(Process processes[], int n, GanttInterval intervals[], int *
 * round_robin
 *
 * Purpose:
-*   Implements the Round Robin scheduling algorithm to schedule processes
-*   with a given time quantum, updating their completion, turnaround, 
-*   and waiting times.
+*   Implements the Round Robin scheduling algorithm using a fixed time quantum.
+*   Each process is allowed to execute in equal time slices and is cycled
+*   through until completion.
 *
 * Inputs:
-*   - processes: Array of Process structures to be scheduled.
-*   - n: Number of processes in the array.
-*   - quantum: Time quantum for Round Robin scheduling.
+*   - processes: An array of Process structures to be scheduled.
+*   - n: The number of processes in the array.
+*   - quantum: The time slice allocated to each process per turn.
+*   - intervals: An array to store the Gantt chart intervals for process execution.
+*   - interval_count: Pointer to store the number of intervals generated.
 *
 * Output:
-*   - void: The input "processes" array is modified with updated timing metrics
-*           (completion_time, turnaround_time, waiting_time).
+*   - void: The processes array is modified in-place with updated timing metrics.
+*           The intervals array is filled with Gantt chart data.
 *
 * Assumptions:
-*   - Processes are initially sorted by arrival time.
-*   - Quantum value is a positive number.
-*   - Process array contains valid data.
+*   - Quantum is a positive integer.
+*   - Processes are initialized and ready for execution.
 *
 * Limitations:
-*   - Queue is a fixed-size.
+*   - Uses a statically sized queue (fixed array size).
+*   - Does not include tie-breaking logic for arrival conflicts.
 */
 void round_robin(Process processes[], int n, int quantum, GanttInterval intervals[], int *interval_count);
 

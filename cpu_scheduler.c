@@ -1,15 +1,8 @@
-/* 
-* cpu_scheduler.c 
+/*
+* cpu_scheduler.c
 *
-* Contains the main function of a CPU scheduler that compares four algorithms:
-*   - First Come First Served (FCFS)
-*   - Non-Preemptive Shortest Job First (SJF)
-*   - Preemptive Shortest Job First (SJF)
-*   - Round Robin
-* 
-* The program can read input from a file and run all scheduling algorithms
-* on the same set of processes. It then displays the results including
-* metrics of each individual process and average turnaround and waiting times.
+* Main driver for running and comparing scheduling algorithms:
+* FCFS, SJF (non-preemptive and preemptive), and Round Robin.
 */
 
 #include "algorithms.h"
@@ -22,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Copies original process list to a new array and assigns process IDs
 void prepare_processes(Process dest[], Process src[], int n);
 
 /*
@@ -52,6 +46,7 @@ int main(int argc, char *argv[]) {
     GanttInterval intervals[MAX_INTERVALS];
     int interval_count;
 
+    // === Input Handling ===
     if (argc == 2) {
         char filepath[200];
         snprintf(filepath, sizeof(filepath), "testcases/%s", argv[1]);
@@ -66,7 +61,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    struct { char *name; void (*func)(Process[], int, GanttInterval[], int *); } algos[] = {
+    //FCFS, SJF (non-preemptive and preemptive)
+    struct {
+        char *name;
+        void (*func)(Process[], int, GanttInterval[], int *);
+    } algos[] = {
         {"First-Come, First-Served (FCFS)", fcfs},
         {"Non-preemptive Shortest Job First (SJF)", sjf_non_preemptive},
         {"Preemptive Shortest Job First (SJF)", sjf_preemptive}
@@ -76,9 +75,9 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < 3; i++) {
         interval_count = 0;
-        prepare_processes(temp, processes, n);
+        prepare_processes(temp, processes, n);              
         algos[i].func(temp, n, intervals, &interval_count);
-        print_results(temp, n, algos[i].name, intervals, interval_count);
+        print_results(temp, n, algos[i].name, intervals, interval_count); // Output results
     }
 
     interval_count = 0;
