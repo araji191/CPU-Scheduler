@@ -8,6 +8,7 @@
 
 #include "algorithms.h"
 #include "process.h"
+
 #include <limits.h>
 
 void initialize_sjf_processes(Process processes[], int n);

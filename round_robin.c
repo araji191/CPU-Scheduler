@@ -8,6 +8,7 @@
 */
 #include "algorithms.h"
 #include "process.h"
+
 #include <stdbool.h>
 
 void initialize_processes(Process processes[], int n, bool in_queue[]);

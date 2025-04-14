@@ -5,6 +5,7 @@
  * Processes are executed in the order of their arrival, with no preemption.
  * The implementation calculates completion, turnaround, and waiting times for each process.
  */
+
 #include "algorithms.h"
 #include "process.h"
 
